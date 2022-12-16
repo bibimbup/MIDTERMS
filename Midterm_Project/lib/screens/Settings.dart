@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class Settings extends StatefulWidget {
@@ -27,8 +28,11 @@ class _SettingsState extends State<Settings> {
               ),
               label: const Text("Logout"),
               onPressed: (){
-                Navigator.of(context).pushNamedAndRemoveUntil(
-                '/login', (Route<dynamic> route) => false);
+                FirebaseAuth.instance.signOut().then((value) {
+                  print("signed out");
+                  Navigator.of(context).pushNamedAndRemoveUntil(
+                      '/login', (Route<dynamic> route) => false);
+                });
               },
             )
           ],

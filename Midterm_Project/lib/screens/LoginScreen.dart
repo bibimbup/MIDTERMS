@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
+
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -8,6 +12,9 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -18,41 +25,50 @@ class _LoginScreenState extends State<LoginScreen> {
       body: SingleChildScrollView(
         child: Column(
           children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.only(top: 60.0),
+            const Padding(
+              padding: EdgeInsets.only(top: 60.0),
               child: Center(
                 child: SizedBox(
                     width: 200,
                     height: 150,
-                    child: Image.asset('assets/img/buff.jpg')
+                  child: Align(
+                    alignment: Alignment.center,
+                    child: Text(
+                      'hi',
+                      style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
+                    ),
+                  ),
                 ),
+
               ),
             ),
-            const Padding(
-              padding: EdgeInsets.only(
+            Padding(
+              padding: const EdgeInsets.only(
                   left: 15.0,
                   right: 15.0,
                   top: 15,
                   bottom: 0
               ),
               child: TextField(
-                decoration: InputDecoration(
+                controller: _emailController,
+                decoration: const InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: 'Email Address',
                     hintText: 'Enter your email'),
                 keyboardType: TextInputType.emailAddress,
               ),
             ),
-            const Padding(
-              padding: EdgeInsets.only(
+            Padding(
+              padding: const EdgeInsets.only(
                   left: 15.0,
                   right: 15.0,
                   top: 15,
                   bottom: 0
               ),
               child: TextField(
+                controller: _passwordController,
                 obscureText: true,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: 'Password',
                     hintText: 'Enter your password'),
@@ -75,7 +91,14 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               child: TextButton(
                 onPressed: () {
-                  Navigator.pushReplacementNamed(context, '/dashboard');
+                  FirebaseAuth.instance.signInWithEmailAndPassword(
+                      email: _emailController.text,
+                      password: _passwordController.text
+                  ).then((value) {
+                    Navigator.pushReplacementNamed(context, '/dashboard');
+                  }).onError((error, stackTrace) {
+                    print("error ${error.toString()}");
+                  });
                 },
                 child: const Text(
                   'Login',
@@ -89,75 +112,3 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 }
-
-
-//         padding: const EdgeInsets.all(10),
-//         child: ListView(
-//           children: <Widget>[
-//             Container(
-//                 alignment: Alignment.center,
-//                 padding: const EdgeInsets.all(40),
-//                 child: const Text(
-//                   'JacJac',
-//                   style: TextStyle(
-//                       color: Colors.blue,
-//                       fontWeight: FontWeight.w500,
-//                       fontSize: 30),
-//                 )),
-//             Container(
-//               padding: const EdgeInsets.all(10),
-//             ),
-//             Container(
-//               padding: const EdgeInsets.all(10),
-//               child: TextField(
-//                 controller: emailController,
-//                 decoration: const InputDecoration(
-//                     border: OutlineInputBorder(),
-//                     labelText: 'Email Address',
-//                 ),
-//                 keyboardType: TextInputType.emailAddress,
-//               ),
-//             ),
-//             Container(
-//               padding: const EdgeInsets.fromLTRB(10, 10, 10, 20),
-//               child: TextField(
-//                 obscureText: true,
-//                 controller: passwordController,
-//                 decoration: const InputDecoration(
-//                   border: OutlineInputBorder(),
-//                   labelText: 'Password',
-//                   suffixIcon: Icon(Icons.visibility),
-//                 ),
-//               ),
-//             ),
-//             Container(
-//                 height: 50,
-//                 padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-//                 child: ElevatedButton(
-//                   child: const Text('Login'),
-//                   onPressed: () {
-//                     Navigator.pushReplacementNamed(context, '/dashboard');
-//                   },
-//                 )
-//             ),
-//             Row(
-//               mainAxisAlignment: MainAxisAlignment.center,
-//               children: <Widget>[
-//                 const Text('Don\'t have an account?'),
-//                 TextButton(
-//                   child: const Text(
-//                     'Sign up',
-//                     style: TextStyle(fontSize: 20),
-//                   ),
-//                   onPressed: () {
-//                     Navigator.pushReplacementNamed(context, '/signup');
-//
-//                   },
-//                 )
-//               ],
-//             ),
-//           ],
-//         )
-//         );
-//   }
-// }
